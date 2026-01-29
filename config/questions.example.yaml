@@ -1,0 +1,42 @@
+# Website Scraper Questions Configuration
+# =========================================
+# Define questions to answer about the scraped website.
+# Questions can be organized in categories or as a flat list.
+# The summarizer will search through all crawled content to find answers.
+
+# Organization/Company Information
+organization:
+  name: "What is the organization or company name?"
+  description: "What does this organization or company do?"
+  mission: "What is the organization's mission or vision statement?"
+  founded: "When was this organization founded?"
+
+# Products and Services
+products:
+  list: "What products or services does this organization offer?"
+  features: "What are the key features of their products or services?"
+  pricing: "What pricing information is available?"
+
+# Team and Leadership
+team:
+  leadership: "Who are the founders or key executives?"
+  team_size: "How many employees does the organization have?"
+  locations: "Where are the offices or locations?"
+
+# Contact Information
+contact:
+  email: "What is the contact email address?"
+  phone: "What is the phone number?"
+  address: "What is the physical address?"
+  social: "What social media accounts does this organization have?"
+
+# Technical Information (for tech companies)
+technical:
+  technologies: "What technologies or platforms does this organization use?"
+  integrations: "What integrations or partnerships are available?"
+
+# Custom Questions (add your own)
+custom:
+  - "What makes this organization unique or different from competitors?"
+  - "What customer testimonials or reviews are mentioned?"
+  - "What recent news or updates are highlighted?"
