@@ -14,13 +14,11 @@ A Python utility for crawling websites, extracting content, and generating summa
 ## Installation
 
 ```bash
-cd website-scraper
+git clone <repo-url> && cd website-scraper
 
-# Create virtual environment (recommended)
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+# Create virtual environment and install dependencies
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 
 # For JavaScript rendering support
@@ -31,19 +29,19 @@ playwright install chromium
 
 ```bash
 # Basic usage - dump website content
-python -m src.main https://example.com --dump-only
+./scrape https://example.com --dump-only
 
 # With questions for Q&A summary
-python -m src.main https://example.com --questions config/questions.example.yaml
+./scrape https://example.com --questions config/questions.example.yaml
 
 # For JavaScript-heavy sites (SPAs)
-python -m src.main https://spa-site.com --js --questions config/questions.example.yaml
+./scrape https://spa-site.com --js --questions config/questions.example.yaml
 ```
 
 ## Usage
 
 ```
-python -m src.main <url> [options]
+./scrape <url> [options]
 
 Arguments:
   url                   The URL of the website to crawl
@@ -91,18 +89,18 @@ The scraper generates markdown files in the output directory:
 
 ```bash
 # Crawl a company website
-python -m src.main https://anthropic.com \
+./scrape https://anthropic.com \
   --questions config/questions.example.yaml \
   --max-pages 30
 
 # Crawl a React SPA with JS rendering
-python -m src.main https://react-app.com \
+./scrape https://react-app.com \
   --js \
   --questions questions.yaml \
   --delay 2
 
 # Quick content dump of small site
-python -m src.main https://blog.example.com \
+./scrape https://blog.example.com \
   --max-pages 10 \
   --dump-only
 ```
@@ -111,8 +109,9 @@ python -m src.main https://blog.example.com \
 
 ```
 website-scraper/
+├── scrape             # CLI entry point (run this)
 ├── src/
-│   ├── main.py        # CLI entry point
+│   ├── main.py        # Main application logic
 │   ├── crawler.py     # Web crawling engine
 │   ├── extractor.py   # Content extraction
 │   ├── summarizer.py  # Question answering
@@ -121,4 +120,13 @@ website-scraper/
 │   └── questions.example.yaml
 ├── output/            # Generated reports
 └── requirements.txt
+```
+
+## Alternative: Manual Python Invocation
+
+If you prefer not to use the `./scrape` wrapper, activate the virtual environment first:
+
+```bash
+source .venv/bin/activate
+python -m src.main https://example.com --dump-only
 ```

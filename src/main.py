@@ -151,11 +151,8 @@ def main():
         console.print("\n[bold cyan]Step 3: Generating outputs...[/bold cyan]")
         output_gen = MarkdownGenerator(args.output)
 
-        # Get site name for filenames
-        site_title = content[0].title if content else "website"
-
-        # Always generate raw dump
-        dump_path = output_gen.generate_raw_dump(content, site_title)
+        # Always generate raw dump (org name extracted automatically from page titles)
+        dump_path = output_gen.generate_raw_dump(content)
         generated_files.append(dump_path)
         console.print(f"  [green]Created:[/green] {dump_path}")
 

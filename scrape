@@ -1,0 +1,17 @@
+#!/bin/bash
+# Website Scraper - Single command entry point
+# Usage: ./scrape <url> [options]
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+VENV_DIR="$SCRIPT_DIR/.venv"
+
+# Check if venv exists
+if [ ! -d "$VENV_DIR" ]; then
+    echo "Error: Virtual environment not found at $VENV_DIR"
+    echo "Run: python3 -m venv .venv && pip install -r requirements.txt"
+    exit 1
+fi
+
+# Activate venv and run
+source "$VENV_DIR/bin/activate"
+python -m src.main "$@"

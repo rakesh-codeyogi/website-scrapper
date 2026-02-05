@@ -24,6 +24,59 @@ class MarkdownGenerator:
         # Limit length and strip whitespace
         return name.strip()[:100]
 
+    def _extract_org_name(self, titles: list[str]) -> str:
+        """
+        Extract organization name from page titles.
+
+        Handles common patterns like:
+        - "Home - WHEELS Global Foundation" → "WHEELS Global Foundation"
+        - "About | Company Name" → "Company Name"
+        - "Company Name :: Products" → "Company Name"
+        """
+        if not titles:
+            return "website"
+
+        # Common separators in page titles
+        separators = [' - ', ' | ', ' :: ', ' : ', ' — ', ' – ']
+
+        # Common page type prefixes/suffixes to ignore
+        page_types = {
+            'home', 'about', 'about us', 'contact', 'contact us',
+            'products', 'services', 'blog', 'news', 'team', 'careers',
+            'faq', 'help', 'support', 'login', 'sign in', 'register'
+        }
+
+        # Try to find common part across multiple titles
+        candidates = []
+
+        for title in titles[:5]:  # Check first 5 pages
+            if not title:
+                continue
+
+            # Split by separators and find the org name part
+            parts = [title]
+            for sep in separators:
+                new_parts = []
+                for part in parts:
+                    new_parts.extend(part.split(sep))
+                parts = new_parts
+
+            # Filter out page type words, keep likely org names
+            for part in parts:
+                part = part.strip()
+                if part.lower() not in page_types and len(part) > 2:
+                    candidates.append(part)
+
+        if not candidates:
+            return titles[0] if titles else "website"
+
+        # Find the most common candidate (likely the org name)
+        from collections import Counter
+        counts = Counter(candidates)
+        most_common = counts.most_common(1)[0][0]
+
+        return most_common
+
     def generate_summary_report(self, summary: Summary) -> Path:
         """
         Generate a comprehensive markdown report from summary.
@@ -109,18 +162,24 @@ class MarkdownGenerator:
                 lines.append("")
 
         # Write to file
-        output_path = self.output_dir / f"{site_name}_summary.md"
+        output_path = self.output_dir / f"{site_name} - Summary.md"
         output_path.write_text("\n".join(lines), encoding="utf-8")
 
         return output_path
 
-    def generate_raw_dump(self, content: list[ExtractedContent], site_name: str = "website") -> Path:
+    def generate_raw_dump(self, content: list[ExtractedContent], site_name: str = None) -> Path:
         """
         Generate a complete dump of all extracted content.
 
         Returns path to the generated file.
         """
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        # Extract organization name from page titles
+        if site_name is None:
+            titles = [page.title for page in content if page.title]
+            site_name = self._extract_org_name(titles)
+
         site_name = self._sanitize_filename(site_name)
 
         lines = [
@@ -182,7 +241,7 @@ class MarkdownGenerator:
             ])
 
         # Write to file
-        output_path = self.output_dir / f"{site_name}_site_dump.md"
+        output_path = self.output_dir / f"{site_name}.md"
         output_path.write_text("\n".join(lines), encoding="utf-8")
 
         return output_path
